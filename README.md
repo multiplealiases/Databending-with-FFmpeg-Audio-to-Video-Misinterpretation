@@ -863,13 +863,13 @@ Ah, but now I need the x-axis to become just standard dB, and the y-axis this dB
 
 ![enter image description here](assets/images/math/ulaw-parametric.png)
 
-Excellent. We now have a thing that can be solved by brute-force. I banged out a little script to plot the μ-law curve, producing both a chart and a very long list of points describing the curve. [Here's the script.](scripts/ulaw/plot-ulaw.py) It's not a very well-written script, but it works well enough. For those who want to use it and calculate the list of points, run:
+Excellent. We now have a thing that can be solved by brute-force. I banged out a little script to plot the μ-law curve, producing both a chart and a very long list of points describing the curve. [Here's the script.](scripts/plot-ulaw.py) It's not a very well-written script, but it works well enough. For those who want to use it and calculate the list of points, run:
 
 ~~~
 python plot-ulaw.py > output.txt
 ~~~
 
-Note that this rounds to 2 decimal places by default, doesn't check for duplicates, and the default output is 7.7 megabytes in size. I wanted an absurd amount of precision, that's all. [I have a compressed copy of the output for those who just want the values.](scripts/ulaw/ulaw-output.zip) I'll declare that as being under public domain, since you can't copyright a set of points for a simple curve, can you? Not that it matters; μ-law is old enough that it's definitely out of patent protection.
+Note that this rounds to 2 decimal places by default, doesn't check for duplicates, and the default output is 7.7 megabytes in size. I wanted an absurd amount of precision, that's all. [I have a compressed copy of the output for those who just want the values.](scripts/ulaw-output.zip) I'll declare that as being under public domain, since you can't copyright a set of points for a simple curve, can you? Not that it matters; μ-law is old enough that it's definitely out of patent protection.
 
 It also generates an SVG file of this figure. I'm oddly proud of it for some reason. I've actually cheated a bit by inverting it in Inkscape, exporting to PNG, then removing transparency info. Here it is:
 
@@ -1102,7 +1102,7 @@ If there's anything you'd like to add or change, fork (and add a pull request) t
 ***
 
 This work (and all files within the folder `/assets` and all of its subdirectories recursively) is licensed under a
-[Creative Commons Attribution 4.0 International License][cc-by].
+[Creative Commons Attribution 4.0 International License][cc-by]
 except where stated otherwise. See the file `LICENSE-CC-BY.txt` for details.
 
 [![CC BY 4.0][cc-by-image]][cc-by]
