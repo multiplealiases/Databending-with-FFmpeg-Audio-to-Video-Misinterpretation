@@ -820,7 +820,7 @@ I'd like to note here that if you look at the source code, it specifies an attac
 
 Anyway, let's run:
 ~~~
-audio-autoencode-compander.py 48000 2 BigBuckBunny-stereo.flac huffyuv 1k 32x32
+python audio-autoencode-compander.py 48000 2 BigBuckBunny-stereo.flac huffyuv 1k 32x32
 ~~~
 
 And that will produce roughly the same terminal output. Don't worry too much about it, it's just doing its magic.
