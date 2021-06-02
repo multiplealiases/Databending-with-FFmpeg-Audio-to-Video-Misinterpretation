@@ -46,7 +46,6 @@ This is gonna be a long story. I'm including it because I want to show the proce
 
 [![Bad Apple, but the audio has been misinterpreted as video, and the video as audio](assets/images/thumbnails/bad-apple.png)](https://youtu.be/tjCTuHKBn4c)
 
-
 I'm surprised that hasn't been copyright claimed yet. Maybe the audio's just that crunchy. Either way, it's a good first effort, I think. It was a proof-of-concept. I'll only demonstrate the audio part here, but video will be used if it was a part of the process.
 
 I have the script right here in this repository under as [audio-autoencode.py](scripts/audio-autoencode.py), but I'll run you through the general process. Don't worry, I won't go through this stuff again, instead relying on the scripts to do it for us.
@@ -249,15 +248,11 @@ As you can hear, there's a lot of noise introduced, even when we did nothing. Th
 
 Here's what that looks like in Audacity, compared with the original. I've also made the difference signal between them by inverting one of them (it doesn't matter which one), and mixing both tracks down to a new track.
 
-![enter image description here](assets/images/audacity/round-1-visualization alt.png)
-
-(assets/images/audacity/round-1-visualization-alt.png)
+![enter image description here](assets/images/audacity/round-1-visualization-alt.png)
 
 You see how the difference signal is almost steady at around -50 dB? That's quantization noise. Let's zoom in on that.
 
-![enter image description here](assets/images/audacity/zoomed difference.png)
-
-(assets/images/audacity/zoomed-difference.png)
+![enter image description here](assets/images/audacity/zoomed-difference.png)
 
 It's a distracting artifact of the conversion down from 16/24/32-bit PCM to just 8 bits. For the benefit of those of you who don't want to (or can't) repeat what I did, here's what that sounds like. Beware that some players will automatically amplify softer audio like this. Turn down your volume, just in case.
 
@@ -290,10 +285,7 @@ I'll only annotate the switches that have changed from the original step 2.
 
 You know how the Round 1 ones had issues with rather excessive noise? It's good enough for Bad Apple (since that is a very "loud" song), but it's awful once I started doing, say, a movie. This is Big Buck Bunny, which is (c) copyright 2008, Blender Foundation / www.bigbuckbunny.org. It's under CC-BY 3.0.
 
-![enter image description here](https://i.postimg.cc/BbWf1Vq5/big-buck-bunny-thumbnail.png)
-https://www.youtube.com/watch?v=aqz-KE-bpKQ
-
-(assets/images/thumbnails/big-buck-bunny-thumbnail.png)
+[![enter image description here](assets/images/thumbnails/big-buck-bunny-thumbnail.png)](https://www.youtube.com/watch?v=aqz-KE-bpKQ)
 
 Yeah, yeah, leave the Big Chungus jokes at the door. I picked out this movie because it was the second movie in the [Xiph lossless test media repository](https://media.xiph.org/). The first one in there is [Elephant's Dream](https://youtu.be/ePVe9FzuFfQ), and I understood none of that. Too spooky. I'd figured I'd go for something a bit more lighthearted, at least on the surface.
 
@@ -453,10 +445,7 @@ The following arguments apply to the output:
 
 And I'll link to a YouTube upload of this movie (with the bitcrushed 8-bit PCM audio) for those who can't run the commands:
 
-![enter image description here](https://i.postimg.cc/mDLCTGpc/big-buck-bunny-with-8-bit-pcm-thumbnail.png)
-https://youtu.be/5rw_leDEndQ
-
-(assets/images/thumbnails/big-buck-bunny-with-8-bit-pcm-thumbnail.png)
+[![enter image description here](assets/images/thumbnails/big-buck-bunny-with-8-bit-pcm-thumbnail.png)](https://youtu.be/5rw_leDEndQ)
 
 It's been subject to YouTube compression, which is pretty bad at lower resolutions. Ignore the video portion; it's not important to what I'm trying to do right now.
 
@@ -466,8 +455,7 @@ You can hear how bad the noise caused by the 8-bit PCM is. It's downright unwatc
 
 My first thought was "dither the audio". But what even is dither? You see, when you just bitcrush audio down to 8 bits, you end up with a difference between the original audio and the bitcrushed audio. This difference is known as quantization noise. People way smarter than me have quantified how high your noise floor (the weakest signal that can be recorded before it gets lost to noise) is, given a bit depth.  This is the equation:
 
-![enter image description here](https://i.postimg.cc/VwhL0YBx/noise-floor.png)
-(assets/images/math/noise-floor.png)
+![enter image description here](assets/images/math/noise-floor.png)
 
 Q represents the bit depth. 1 bit would give you -6 dB, 2 bits -12 dB, 3 bits -18 dB, and so on. CD audio has 16 bits of precision, so its inherent noise floor is -96 dB. That's more-or-less enough for almost all audio if you're only doing playback. You'd want more for editing and mixing, but I'm not covering that here.
 
@@ -475,7 +463,7 @@ In this case, since we had 8-bit PCM, we have a noise floor of -48 dBFS. (Don't 
 
 Let's look at the spectrogram of a part of the quantization noise:
 
-![enter image description here](https://i.postimg.cc/Gm0XcV2n/spectrogram-BBB-diff-30-50.png)(assets/images/spectrogram/spectrogram-BBB-diff-30-50.png)
+![enter image description here](assets/images/spectrogram/spectrogram-BBB-diff-30-50.png)
 
 It's mostly noise, but it does sometimes turn into something that's distinctly not-noise. This is distracting. 
 
@@ -718,14 +706,14 @@ ffmpeg -i BigBuckBunny-stereo-dither-huffyuv-1k-32x32.flac -i big_buck_bunny_360
 So now our audio is now dithered. It sounds as if you recorded the movie's audio onto cassette tape, which probably isn't the worst thing, but I want as close as possible to lossless, damn it! That, and you get this when you add a lossy video codec into the mix:
 
 [\[BigBuckBunny-stereo-dither-libx264-32k-32x32.webm\]](/assets/audio/BigBuckBunny-stereo-dither-libx264-32k-32x32.webm)
+
 [\[BigBuckBunny-stereo-dither-libx264-32k-32x32.mp3\]](/assets/audio/BigBuckBunny-stereo-dither-libx264-32k-32x32.mp3)
 
 Again, the video codec's incorporating the noise into the bitcrushed audio, which is certainly not how I'd like my audio. I'd prefer it to be bitcrushed only while it's actually playing, you get me?
 
 Oh, and here's the difference signal now, under a spectrogram:
 
-![enter image description here](https://i.postimg.cc/TPQvspLC/spectrogram-BBB-dither-diff-30-50.png)
-(assets/images/spectrogram/spectrogram-BBB-dither-diff-30-50.png)
+![enter image description here](assets/images/spectrogram/spectrogram-BBB-dither-diff-30-50.png)
 
 Perfectly homogeneous, just like what random noise should be.
 
@@ -827,8 +815,7 @@ I decided to implement a compander, which means the flowchart from before is now
 
 Now, I got lazy and implemented a really crappy one at first. I present to you, the most primitive compander possible:
 
-![enter image description here](https://i.postimg.cc/TRq68yMR/primitive-compander-nt-invert.png)
-(assets/images/charts/primitive-compander-nt-invert.png)
+![enter image description here](assets/images/charts/primitive-compander_nt-invert.png)
 
 No, I didn't actually do this plot way back when. It's only now that I've discovered the `--plot` option in SoX to plot the curve of a compander, and now I know why it's not very good. I bashed my head against a metaphorical wall trying to figure out SoX's documentation for the compand effect. 
 
@@ -841,15 +828,15 @@ audio-autoencode-compander.py 48000 2 BigBuckBunny-stereo.flac huffyuv 1k 32x32
 
 And that will produce roughly the same terminal output. Don't worry too much about it, it's just doing its magic.
 
-Anyway, the final file in this example is called BigBuckBunny-stereo-1-1-0.01-huffyuv-1k-32x32.flac. I'll give the usual 'ladder' here:
+Anyway, the final file in this example is called BigBuckBunny-stereo-1-1-0.01-huffyuv-1k-32x32.flac. I'll give the usual 2 steps here:
 
 [\[BigBuckBunny-stereo-compander-huffyuv-1k-32x32.webm, Opus @ 160 kbps\]](/assets/audio/BigBuckBunny-stereo-compander-huffyuv-1k-32x32.webm)
+
 [\[BigBuckBunny-stereo-compander-huffyuv-1k-32x32.mp3, MP3 @ 320 kbps\]](/assets/audio/BigBuckBunny-stereo-compander-huffyuv-1k-32x32.mp3)
 
 I'm not even sure if the noise has decreased or not. More to the point, it does the thing that dynamic range compression does to audio: make it louder. Observe:
 
-![enter image description here](https://i.postimg.cc/9W9mBv3s/original-vs-primitive-compander.png)
-(assets/images/audacity/original-vs-primitive-compander.png)
+![enter image description here](assets/images/audacity/original-vs-primitive-compander.png)
 
 Okay, it's technically quieter, but that's because the start has this burst of noise. What is obvious is that the dynamic range, the difference between the loudest and quietest parts, is clearly much worse. This isn't at all faithful to the source. I tried desperately for days trying to see if there were different attack, decay and delay parameters that would give better results, but then I had to give up after I realized that the script I wrote would end up generating a ludicrous number of files as it went through every possible permutation.
 
@@ -867,20 +854,17 @@ This is obviously a Bad Thing, so smart people realized that they could compand 
 
 There's actually two versions, the continuous (analog) and discrete (digital) versions. I tried just databending by just encoding μ-law files, but that ended up being a bit painful on the ears. That rules out the discrete version. Say hello to the continuous μ-law compression function! No, there's no derivation here, just me experimenting in LaTeX for the first time in a "serious" capacity. Enjoy these equations.
 
-![enter image description here](https://i.postimg.cc/QtTKDq0S/ulaw.png)
-(assets/images/math/ulaw.png)
+![enter image description here](assets/images/math/ulaw.png)
 
 μ = 255, if we're following the standard. Since I'm lazy, I just decided to copy theirs. Hey, if it's good enough for old-school telephony, it's good enough for general audio, right?
 
 That then needs to be converted to dB. That's 20*log_10(x), so it then expands to:
 
-![enter image description here](https://i.postimg.cc/Zn0bZYbm/ulaw-db.png)
-(assets/images/math/ulaw-db.png)
+![enter image description here](assets/images/math/ulaw-db.png)
 
 Ah, but now I need the x-axis to become just standard dB, and the y-axis this dB version of F(x). I need a parametric equation, in other words. I'll modify some stuff, and it now becomes 3 things:
 
-![enter image description here](https://i.postimg.cc/4dGCBf7P/ulaw-parametric.png)
-(assets/images/math/ulaw-parametric.png)
+![enter image description here](assets/images/math/ulaw-parametric.png)
 
 Excellent. We now have a thing that can be solved by brute-force. I banged out a little script to plot the μ-law curve, producing both a chart and a very long list of points describing the curve. [Here's the script.](scripts/ulaw/plot-ulaw.py) It's not a very well-written script, but it works well enough. For those who want to use it and calculate the list of points, run:
 
@@ -888,12 +872,11 @@ Excellent. We now have a thing that can be solved by brute-force. I banged out a
 python plot-ulaw.py > output.txt
 ~~~
 
-Note that this rounds to 2 decimal places by default, doesn't check for duplicates, and the default output is 7.7 megabytes in size. I wanted an absurd amount of precision, that's all. [I have a compressed copy of the output for those who just want the values.](scripts/ulaw/output.zip)
+Note that this rounds to 2 decimal places by default, doesn't check for duplicates, and the default output is 7.7 megabytes in size. I wanted an absurd amount of precision, that's all. [I have a compressed copy of the output for those who just want the values.](scripts/ulaw/ulaw-output.zip) I'll declare that as being under public domain, since you can't copyright a set of points for a simple curve, can you? Not that it matters; μ-law is old enough that it's definitely out of patent protection.
 
 It also generates an SVG file of this figure. I'm oddly proud of it for some reason. I've actually cheated a bit by inverting it in Inkscape, exporting to PNG, then removing transparency info. Here it is:
 
-![enter image description here](https://i.postimg.cc/z8GXpnQS/u-law-plot-rev2-0-mu-255-dark-nt.png)
-(assets/images/math/u-law-plot-rev2-0-mu-255-dark-nt.png)
+![enter image description here](assets/images/math/u-law_plot-rev2-0-mu-255-dark-nt.png)
 
 I know it looks like a diagram you'd find in a textbook or research paper, but I think it's quite nice. 
 
@@ -911,20 +894,21 @@ We'll be switching audio files this time. Now, we're using [Night Owl](https://f
 python AtoVtoA-noatk.py 44100 2 night-owl.mp3 huffyuv 1k 32x32
 ~~~
 
-The final output file here is called "night-owl-end-huffyuv-1k-32x32.flac". As usual, I'll provide the standard ladder:
+The final output file here is called "night-owl-end-huffyuv-1k-32x32.flac". As usual, I'll provide the standard steps:
 
 [\[things-fall-apart-end-huffyuv-1k-32x32.webm, Opus @ 160 kbps\]](assets/audio/things-fall-apart-end-huffyuv-1k-32x32.webm)
+
 [\[things-fall-apart-end-huffyuv-1k-32x32.mp3, MP3 @ 320 kbps\]](assets/audio/things-fall-apart-end-huffyuv-1k-32x32.mp3)
 
 It sounds normal at first, but 1 minute in, there's stray sounds on the left and right channels, even though the original had them balanced. It's doing some weird clicking. Let's open both the original and the 'bent version in Audacity (I would strongly recommend using your FLAC originals for best results, not the lossy versions here).
 You'll probably have to manually align both tracks to each other, then invert the bottom one. Mix and render to new track, and that's the difference signal.
 
-![enter image description here](https://i.postimg.cc/SkS3gZTT/things-fall-apart-original-vs-ffmpeg-compander.png)
-(assets/images/things-fall-apart-original-vs-ffmpeg-compander.png)
+![enter image description here](assets/images/audacity/things-fall-apart-original-vs-ffmpeg-compander.png)
 
 The downloads for the difference signal are here:
 
 [\[things-fall-apart-diff.webm, Opus @ 160 kbps\]](assets/audio/things-fall-apart-diff.webm)
+
 [\[things-fall-apart-diff.mp3, MP3 @ 320 kbps\]](assets/audio/things-fall-apart-diff.mp3)
 
 It's not really very good, is it? Constant clicking is an odd artifact to have.
@@ -939,7 +923,8 @@ I agonized over this weird distortion issue. I calculated a more detailed μ-law
 
 Armed with this thought, I went back to using SoX for companding. I still didn't quite understand the syntax, but at least now I can just brute-force it in Python and hope it works. And you know what? It works. Here's a plot of the μ-law compander as implemented in SoX:
 
-![enter image description here](https://i.postimg.cc/M68dvDnJ/proper-ulaw-nt-invert.png)
+![enter image description here](https://i.postimg.cc/M68dvDnJ/proper-ulaw_nt-invert.png)
+
 That's a thing of beauty. The script now is [AtoVtoA-sox-no-dither.py](scripts/AtoVtoA-sox-no-dither.py). I think it makes some files under the same name as before, so I'd suggest making a subdirectory with just this new script and a new copy of *Things Fall Apart*. Run:
 
 ~~~
@@ -976,6 +961,7 @@ python AtoVtoA-sox-no-dither.py 44100 2 things-fall-apart.flac huffyuv 1k 32x32
 The final output is called "things-fall-apart-no-dither-huffyuv-1k-32x32.flac". Here's some lossy versions, for the benefit of those who can't run these:
 
 [\[things-fall-apart-no-dither-huffyuv-1k-32x32.webm, Opus @ 160 kbps\]](assets/audio/things-fall-apart-no-dither-huffyuv-1k-32x32.webm)
+
 [\[things-fall-apart-no-dither-huffyuv-1k-32x32.mp3, MP3 @ 320 kbps\]](assets/audio/things-fall-apart-no-dither-huffyuv-1k-32x32.mp3)
 
 It's got a bit of this buzzing distortion throughout, but I think it's a reasonable sacrifice to make in exchange for dynamic range and normal-sounding audio.
@@ -989,6 +975,7 @@ python AtoVtoA-sox-no-dither.py 44100 2 things-fall-apart.flac libvpx 64k 32x32
 That produces a rather crunchy version of the song. Lossy versions below:
 
 [\[things-fall-apart-no-dither-libvpx-64k-32x32.webm, Opus @ 160 kbps\]](assets/audio/things-fall-apart-no-dither-libvpx-64k-32x32.webm)
+
 [\[things-fall-apart-no-dither-libvpx-64k-32x32.mp3, MP3 @ 320 kbps\]](assets/audio/things-fall-apart-no-dither-libvpx-64k-32x32.mp3)
 
 I think I've been glossing over what the intermediate stuff actually means. Let's actually look.
@@ -996,35 +983,36 @@ I think I've been glossing over what the intermediate stuff actually means. Let'
 ### Step 1 (Step 0 in the file)
 Alright, let's import the file called "things-fall-apart-step0-compressed.raw" into something. It's possible to use FFmpeg for this, but for this one, I think it's better to use Audacity to import the raw 8-bit PCM. It's a more visual approach, you know?
 
-![enter image description here](https://i.postimg.cc/8Tpw2Sc8/looking-at-step1.png)
+![enter image description here](assets/images/audacity/looking-at-step1.png)
+
 I don't think I need to provide audio for this one. It's just a super-loud version of the original song. It's absolute pain to listen to, yet it technically doesn't clip. If I uploaded this to any streaming service out there, it would get normalized down to a more reasonable level immediately. I think Oasis' *(What's The Story) Morning Glory?* is actually quieter than this! This could be used in memes.
 
 ### Step 2 (Step 1 in the file)
 
 Let's look at the video. I've exported 5 seconds of the 32x32 video to GIF and upscaled it to 128x128. 5 seconds here doesn't correspond to 5 seconds in the song, just pointing that out.
 
-![enter image description here](https://i.postimg.cc/h4m9HKHB/tfa-step1-128x128-5s.gif)
-(assets/images/gifs/tfa-step1-128x128-5s.gif)
+![enter image description here](assets/images/gifs/tfa-step1-128x128-5s.gif)
 
 The first thing you'll notice is that it's very bright. That's because of the compressor, since we've fed the video codec the compressed Step 1 output. You can also see the bass and treble notes being very literally visualized here.
 
 The way this works is that every frame is basically its own image. Let's just extract frame #1 here.
 
-![enter image description here](https://i.postimg.cc/SNrVvyMK/tfa-step1-128x128-frame1.png)(assets/images/gifs/tfa-step1-128x128-frame1.png)
+![enter image description here](assets/images/gifs/tfa-step1-128x128-frame1.png)
 
 Since we're working in 24-bit RGB, each of the color components actually encodes one sample of the 8-bit PCM audio. We start from the top-leftmost pixel, go right along the width of the image, then go down 1 pixel once we hit the edge. Repeat until the video finishes. I made a visualization of the first 5 frames stacked on top of each other to help communicate this idea:
 
-![enter image description here](https://i.postimg.cc/sxtyFp8p/tfa-step1-128x128-frame1to5-visualization.png)
-(assets/images/gifs/tfa-step1-128x128-frame1to5-visualization.png)
+![enter image description here](assets/images/gifs/tfa-step1-128x128-frame1to5-visualization.png)
 
 To something interpreting the raw data as audio, it's not much different from just a very long image.
 
 As for what happens with a lossy codec, here's the first 5 seconds of that VP8 version from before:
 
-![enter image description here](https://i.postimg.cc/ZnVmRGCx/tfa-libvpx-step1-5s-optim-lossy-300.gif)
+![enter image description here](assets/images/gifs/tfa-libvpx-step1-5s-optim-lossy-300.gif)
+
 And a static visualization of the first 5 frames:
 
-![enter image description here](https://i.postimg.cc/CxZ4cbHF/tfa-libvpx-step1-128x128-frame1to5-visualization.png)
+![enter image description here](assets/images/gifs/tfa-libvpx-step1-128x128-frame1to5-visualization.png)
+
 It's lost a lot of the fine color detail. For video, it's fine to sacrifice color detail, but since each pixel represents 3 samples of audio here, it's basically downsampled the audio by a factor of 3.  Also, it's posterized what color is left, which decreases the effective bit depth. That's why the audio sounds crunchy at the end.
 
 ### Step 3 (Step 2 in the file)
@@ -1036,7 +1024,7 @@ This is more-or-less just a revision of the Round 5 script, with some degree of 
 
 ## How do you find video codecs?
 
-FFmpeg provides a list if you run `ffmpeg -codecs`, but that's an awfully long list. The smart way of doing it is to run the output through `grep` or `findstr` to find what we need. Thankfully, it's very simple to find what codecs will work because each codec is listed with a code. My version of FFmpeg was built on the 10th of May, so this might change, but for now, the code looks like this:
+FFmpeg provides a list if you run `ffmpeg -codecs`, but that's an awfully long list. The smart way of doing it is to run the output through `grep` or `findstr` to find what we need. Thankfully, it's very simple to find what codecs will work because each codec is listed with a code. My version of FFmpeg was built on the 10th of May 2021, so this might change, but for now, the code looks like this:
 ~~~
 Codecs:
  D..... = Decoding supported
