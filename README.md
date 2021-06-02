@@ -12,13 +12,9 @@
 ## Required Reading
 If you wish to follow along, please read and understand these articles first if you haven't already:
 
- - [*Databending with Audacity: What I do Differently/Required Reading*](https://github.com/multiplealiases/Databending-In-Audacity-Required-Reading/blob/main/README.md) by me
-
 - [(The PATH-setting part of) *Databending with FFmpeg: (Ab)using Lossy Audio Compression to Databend Images*](https://github.com/multiplealiases/Databending-With-FFmpeg/blob/main/README.md) by yours truly
 
-The first one covers my particular methodology for databending, and how it's different from the one shown in the first article. It's centered on Audacity as the databending method, but two of the fundamental ideas there (specifically about using RAW, and planar RAW at that) will be used throughout.
-
-The second one is Windows-specific, and covers how to temporarily set your PATH to point to your copy of FFmpeg (the same general method applies to SoX and Python). As before, if you already know that part (or you already have FFmpeg, SoX and Python in PATH like I do), you can safely skip it. 
+This one is Windows-specific, and covers how to temporarily set your PATH to point to your copy of FFmpeg (the same general method applies to SoX and Python). As before, if you already know that part (or you already have FFmpeg, SoX and Python in PATH like I do), you can safely skip it. 
 
 Indeed, if you're a Linux user, you can get yourself copies of all three at your favorite package manager, and it'll all be properly set up without bothering with this PATH-editing nonsense. Consult your documentation for that.
 
