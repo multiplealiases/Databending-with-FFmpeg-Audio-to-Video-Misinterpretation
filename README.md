@@ -240,6 +240,7 @@ The following switches apply to the output.
 For file size and compatibility reasons, I will use Opus and MP3, in that order. Go use the MP3 one if you can't play the Opus version. I suggest installing VLC if neither of them play.
 
 [\[rheum-round1-end.webm, Opus audio @ 160 kbps\]](assets/audio/rheum-round1-end.webm)
+
 [\[rheum-round1-end.mp3, MP3 audio @ 320 kbps\]](assets/audio/rheum-round1-end.mp3)
 
 (These bitrates are hilariously overkill here, I'll admit. I just wanted to make sure you're not losing out on perceptible quality, especially later.)
@@ -944,7 +945,7 @@ This means that my copy of SoX is broken, but it also generates an error if you 
 sox FAIL formats: no handler for file extension `webm'
 ~~~
 
-Or "mp4", depending on what you downloaded. This means we'll have to preprocess our files to FLAC format, because that's the only compressed format that SoX consistently reads at all. You could try WAV, but that's uncompressed.  The conversion is accomplished by doing:
+Or "mp4", or whatever, depending on what you downloaded. This means we'll have to preprocess our files to FLAC format, because that's the only compressed format that SoX consistently reads at all. You could try WAV, but that's uncompressed.  The conversion is accomplished by doing:
 
 ~~~
 ffmpeg -i things-fall-apart.mp3 -c:a flac things-fall-apart.flac
