@@ -12,7 +12,7 @@
 ## Required Reading
 If you wish to follow along, please read and understand these articles first if you haven't already:
 
-- [(The PATH-setting part of) *Databending with FFmpeg: (Ab)using Lossy Audio Compression to Databend Images*](https://github.com/multiplealiases/Databending-With-FFmpeg/blob/main/README.md) by yours truly
+- [(The PATH-setting part of) *Databending with FFmpeg: (Ab)using Lossy Audio Compression to Databend Images*](https://github.com/multiplealiases/Databending-With-FFmpeg/blob/main/README.md#an-optional-but-recommended-tip-add-the-ffmpeg-directory-to-path-temporarily) by yours truly
 
 This one is Windows-specific, and covers how to temporarily set your PATH to point to your copy of FFmpeg (the same general method applies to SoX and Python). As before, if you already know that part (or you already have FFmpeg, SoX and Python in PATH like I do), you can safely skip it. 
 
