@@ -1098,7 +1098,8 @@ Your FFmpeg may differ, and some codecs don't support the MKV container format, 
 
 The process of discovery here took me 35 days, and it took me another 25 to complete the first draft of this article. It's the longest databending project I've completed, but I'm happy with the results.
 
-If there's anything you'd like to add or change, fork (and add a pull request) this repository or find my contact info on GitHub at [multiplealiases](https://github.com/multiplealiases). 
+If there's anything you'd like to add or change, fork (and add a pull request) this repository or find my contact info on GitHub at [multiplealiases](https://github.com/multiplealiases). I'm especially worried about dead links; please tell me if there are any.
+
 ***
 
 This work (and all files within the folder `/assets` and all of its subdirectories recursively) is licensed under a
