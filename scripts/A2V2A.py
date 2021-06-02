@@ -44,7 +44,7 @@ if len(sys.argv) == 1:
 
 ## Variables
 
-#### Step 0
+#### Step 1
 ## Setting bit_depth to anything other than 8 will likely lead to severely-distorted audio. You have been warned!
 bit_depth = "8"
 sample_rate = sys.argv[1]
@@ -99,21 +99,21 @@ knee_dB = "0.2"
 ## Please note that audio is normalized after companding, so it's of little consequence.
 out_gain_dB = "-12"
 
-#### Step 1
+#### Step 2
 in_filename = os.path.splitext(sys.argv[3])[0]
 in_extension = os.path.splitext(sys.argv[3])[1]
 
-step1_out_extension = ".mkv"
+step2_out_extension = ".mkv"
 resolution = sys.argv[6]
 framerate = "30"
 pixel_format = "rgb24"
 video_codec = sys.argv[4]
 bitrate_codec = sys.argv[5]
 
-#### Step 2
-# (no new variables; all recycled from Step 1)
+#### Step 3
+# (no new variables; all recycled from Step 2)
 
-#### Step 3.
+#### Step 4.
 ## File-specific parameters. Set these equal to the original audio's settings.
 channels = sys.argv[2]
 
@@ -131,36 +131,37 @@ expand_atk_release = f"{attack},{release}"
 expand_start_end = f"{knee_dB}:{expand_dB}"
 
 in_file = f"{in_filename}{in_extension}"
-step0_out = f"{in_filename}-step0-compressed"
-step1_out = f"{in_filename}-step1-{video_codec}-{bitrate_codec}-{resolution}"
-step2_out = f"{in_filename}-step2-{video_codec}-{bitrate_codec}-{resolution}"
+step0_out = f"{in_filename}-step1-compressed"
+step1_out = f"{in_filename}-step2-{video_codec}-{bitrate_codec}-{resolution}"
+step2_out = f"{in_filename}-step3-{video_codec}-{bitrate_codec}-{resolution}"
 step3_out = f"{in_filename}-end-{video_codec}-{bitrate_codec}-{resolution}"
 
-## Step 0: Compresses (in the audio engineering sense, not the computing sense), then normalizes an input audio file.
+## Step 1: Compresses (in the audio engineering sense, not the computing sense), then normalizes an input audio file.
 ## Saves it as 8-bit PCM. Compression here prevents the -48 dB noise floor inherent in 8-bit PCM from interfering with the output later.
-step0_list = ["sox",in_file,
+step0_list = ["sox",in_file,"--multi-threaded","--buffer","131072",
 "-r",sample_rate,"-e",encoding,"-SDV","-b",bit_depth,"-c",channels,f"{step0_out}.raw",
 "compand",compress_atk_release,compress_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
 print(step0_list)
 subprocess.run(step0_list)
 
-## Step 1: Takes in the 8-bit PCM as RGB 24-bit video (by default), and encodes it into a format of your choice as defined in the input parameters.
+## Step 2: Takes in the 8-bit PCM as RGB 24-bit video (by default), and encodes it into a format of your choice as defined in the input parameters.
 step1_list = ["ffmpeg","-y",
               "-f","rawvideo","-s",resolution,"-r",framerate,"-pix_fmt",pixel_format,"-i",f"{step0_out}.raw",
-              "-c:v",video_codec,"-b:v",bitrate_codec,f"{step1_out}{step1_out_extension}"]
+              "-c:v",video_codec,"-b:v",bitrate_codec,f"{step1_out}{step2_out_extension}"]
 print(step1_list)
 subprocess.run(step1_list)
 
 
-## Step 2: Decode the encoded "video" back into raw video.
+## Step 3: Decode the encoded "video" back into raw video.
 step2_list = ["ffmpeg","-y",
-              "-i",f"{step1_out}{step1_out_extension}",
+              "-i",f"{step1_out}{step2_out_extension}",
               "-f","rawvideo","-r",framerate,"-pix_fmt",pixel_format,f"{step2_out}.raw"]
 print(step2_list)
 subprocess.run(step2_list)
 
-## Step 3: Use SoX to interpret our raw video back into 8-bit PCM.
+## Step 4: Use SoX to interpret our raw video back into 8-bit PCM.
 ## Expands the audio, re-gains it, and spits out the same format as the input.
-step3_list = ["sox","-r",sample_rate,"-e",encoding,"-SV","-b",bit_depth,"-c",channels,f"{step2_out}.raw","-b",out_bit_depth,"-c",channels,f"{step3_out}{out_audio_codec}","compand",expand_atk_release,expand_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
+step3_list = ["sox","--multi-threaded","--buffer","131072",
+"-r",sample_rate,"-e",encoding,"-SV","-b",bit_depth,"-c",channels,f"{step2_out}.raw","-b",out_bit_depth,"-c",channels,f"{step3_out}{out_audio_codec}","compand",expand_atk_release,expand_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
 print(step3_list)
 subprocess.run(step3_list)
