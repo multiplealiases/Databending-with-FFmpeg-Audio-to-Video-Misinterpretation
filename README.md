@@ -996,7 +996,7 @@ The way this works is that every frame is basically its own image. Let's just ex
 
 ![enter image description here](assets/images/gifs/tfa-step1-128x128-frame1.png)
 
-Since we're working in 24-bit RGB, each of the color components actually encodes one sample of the 8-bit PCM audio. We start from the top-leftmost pixel, go right along the width of the image, then go down 1 pixel once we hit the edge. Repeat until the video finishes. I made a visualization of the first 5 frames stacked on top of each other to help communicate this idea:
+Since we're working in 24-bit RGB, each of the color components actually encodes one sample of the 8-bit PCM audio. We start from the top-leftmost pixel, go right along the width of the image, then go down 1 pixel once we hit the edge, resetting the "cursor" back to the left edge. Repeat until the video finishes. I made a visualization of the first 5 frames stacked on top of each other to help communicate this idea:
 
 ![enter image description here](assets/images/gifs/tfa-step1-128x128-frame1to5-visualization.png)
 
