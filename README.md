@@ -1017,7 +1017,7 @@ This stage just decodes the encoded video to raw 24-bit RGB. Nothing special her
 
 ## Final script
 
-This is more-or-less just a revision of the Round 5 script, with some degree of error-checking implemented. It tells you if FFmpeg or SoX aren't installed, or both, it enables multithreading in SoX, and it normalizes the Step numbers to follow this article's notation. It's called [A2V2A.py](scripts/A2V2A.py), because I'm creatively bankrupt when it comes to names.
+This is more-or-less just a revision of the Round 5 script, with some degree of error-checking implemented. It tells you if FFmpeg or SoX aren't installed, or both, it enables multithreading in SoX (assuming it does anything), and it normalizes the Step numbers to follow this article's notation. It's called [A2V2A.py](scripts/A2V2A.py), because I'm creatively bankrupt when it comes to names.
 
 ## How do you find video codecs?
 
