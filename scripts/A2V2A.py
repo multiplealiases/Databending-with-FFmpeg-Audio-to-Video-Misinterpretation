@@ -98,6 +98,8 @@ knee_dB = "0.2"
 ## Companders tend to clip the output; this lowers the gain to prevent that. 
 ## Please note that audio is normalized after companding, so it's of little consequence.
 out_gain_dB = "-12"
+## Output still tends to clip, so a separate normalizing gain is needed.
+norm_step1_gain = "-1.1"
 
 #### Step 2
 in_filename = os.path.splitext(sys.argv[3])[0]
@@ -140,7 +142,7 @@ step3_out = f"{in_filename}-end-{video_codec}-{bitrate_codec}-{resolution}"
 ## Saves it as 8-bit PCM. Compression here prevents the -48 dB noise floor inherent in 8-bit PCM from interfering with the output later.
 step0_list = ["sox",in_file,"--multi-threaded","--buffer","131072",
 "-r",sample_rate,"-e",encoding,"-SDV","-b",bit_depth,"-c",channels,f"{step0_out}.raw",
-"compand",compress_atk_release,compress_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
+"compand",compress_atk_release,compress_start_end,out_gain_dB,"0",delay,"gain","-n",norm_step1_gain]
 print(step0_list)
 subprocess.run(step0_list)
 
