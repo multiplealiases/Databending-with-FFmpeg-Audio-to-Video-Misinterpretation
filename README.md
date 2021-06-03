@@ -229,7 +229,7 @@ ffmpeg -i rheum-step4.flac -c:a libopus -b:a 160k rheum-end.webm
 
 The following switches apply to the output.
 
-- `-c:a libopus` tells FFmpeg to use the libopus encoder. Opus is a free and open-source format that always outperforms MP3 in quality and size efficiency, especially once I get to using the μ-law compander later on. AAC is a possible alternative, but its best encoders are locked behind patents and legal nonsense. I'll use it myself here for compatibility with older Apple devices, however.
+- `-c:a libopus` tells FFmpeg to use the libopus encoder. Opus is a free and open-source format that always outperforms MP3 in quality and size efficiency, especially once I get to using the μ-law compander later on. AAC is a possible alternative, but its best encoders are locked behind patents and legal nonsense.
 - `-b:a 160k` sets a bitrate of 160 kbps for the output.
 - `rheum-end.webm` sets an output file called "rheum-end.opus".
 
