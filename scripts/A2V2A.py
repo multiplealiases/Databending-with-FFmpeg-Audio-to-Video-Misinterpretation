@@ -133,37 +133,37 @@ expand_atk_release = f"{attack},{release}"
 expand_start_end = f"{knee_dB}:{expand_dB}"
 
 in_file = f"{in_filename}{in_extension}"
-step0_out = f"{in_filename}-step1-compressed"
-step1_out = f"{in_filename}-step2-{video_codec}-{bitrate_codec}-{resolution}"
-step2_out = f"{in_filename}-step3-{video_codec}-{bitrate_codec}-{resolution}"
-step3_out = f"{in_filename}-end-{video_codec}-{bitrate_codec}-{resolution}"
+step1_out = f"{in_filename}-step1-compressed"
+step2_out = f"{in_filename}-step2-{video_codec}-{bitrate_codec}-{resolution}"
+step3_out = f"{in_filename}-step3-{video_codec}-{bitrate_codec}-{resolution}"
+step4_out = f"{in_filename}-end-{video_codec}-{bitrate_codec}-{resolution}"
 
 ## Step 1: Compresses (in the audio engineering sense, not the computing sense), then normalizes an input audio file.
 ## Saves it as 8-bit PCM. Compression here prevents the -48 dB noise floor inherent in 8-bit PCM from interfering with the output later.
-step0_list = ["sox",in_file,"--multi-threaded","--buffer","131072",
-"-r",sample_rate,"-e",encoding,"-SDV","-b",bit_depth,"-c",channels,f"{step0_out}.raw",
+step1_list = ["sox",in_file,"--multi-threaded","--buffer","131072",
+"-r",sample_rate,"-e",encoding,"-SDV","-b",bit_depth,"-c",channels,f"{step1_out}.raw",
 "compand",compress_atk_release,compress_start_end,out_gain_dB,"0",delay,"gain","-n",norm_step1_gain]
-print(step0_list)
-subprocess.run(step0_list)
-
-## Step 2: Takes in the 8-bit PCM as RGB 24-bit video (by default), and encodes it into a format of your choice as defined in the input parameters.
-step1_list = ["ffmpeg","-y",
-              "-f","rawvideo","-s",resolution,"-r",framerate,"-pix_fmt",pixel_format,"-i",f"{step0_out}.raw",
-              "-c:v",video_codec,"-b:v",bitrate_codec,f"{step1_out}{step2_out_extension}"]
 print(step1_list)
 subprocess.run(step1_list)
 
-
-## Step 3: Decode the encoded "video" back into raw video.
+## Step 2: Takes in the 8-bit PCM as RGB 24-bit video (by default), and encodes it into a format of your choice as defined in the input parameters.
 step2_list = ["ffmpeg","-y",
-              "-i",f"{step1_out}{step2_out_extension}",
-              "-f","rawvideo","-r",framerate,"-pix_fmt",pixel_format,f"{step2_out}.raw"]
+              "-f","rawvideo","-s",resolution,"-r",framerate,"-pix_fmt",pixel_format,"-i",f"{step1_out}.raw",
+              "-c:v",video_codec,"-b:v",bitrate_codec,f"{step2_out}{step2_out_extension}"]
 print(step2_list)
 subprocess.run(step2_list)
 
-## Step 4: Use SoX to interpret our raw video back into 8-bit PCM.
-## Expands the audio, re-gains it, and spits out the same format as the input.
-step3_list = ["sox","--multi-threaded","--buffer","131072",
-"-r",sample_rate,"-e",encoding,"-SV","-b",bit_depth,"-c",channels,f"{step2_out}.raw","-b",out_bit_depth,"-c",channels,f"{step3_out}{out_audio_codec}","compand",expand_atk_release,expand_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
+
+## Step 3: Decode the encoded "video" back into raw video.
+step3_list = ["ffmpeg","-y",
+              "-i",f"{step2_out}{step2_out_extension}",
+              "-f","rawvideo","-r",framerate,"-pix_fmt",pixel_format,f"{step3_out}.raw"]
 print(step3_list)
 subprocess.run(step3_list)
+
+## Step 4: Use SoX to interpret our raw video back into 8-bit PCM.
+## Expands the audio, re-gains it, and spits out the same format as the input.
+step4_list = ["sox","--multi-threaded","--buffer","131072",
+"-r",sample_rate,"-e",encoding,"-SV","-b",bit_depth,"-c",channels,f"{step3_out}.raw","-b",out_bit_depth,"-c",channels,f"{step4_out}{out_audio_codec}","compand",expand_atk_release,expand_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
+print(step4_list)
+subprocess.run(step4_list)
