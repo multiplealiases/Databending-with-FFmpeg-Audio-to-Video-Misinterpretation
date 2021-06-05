@@ -44,7 +44,7 @@ This is gonna be a long story. I'm including it because I want to show the proce
 
 I'm surprised that hasn't been copyright claimed yet. Maybe the audio's just that crunchy. Either way, it's a good first effort, I think. It was a proof-of-concept. I'll only demonstrate the audio part here, but video will be used if it was a part of the process.
 
-I have the script right here in this repository under as [audio-autoencode.py](scripts/audio-autoencode.py), but I'll run you through the general process. Don't worry, I won't go through this stuff again, instead relying on the scripts to do it for us.
+I have the script right here in this repository under as [audio-autoencode.py](scripts/audio-autoencode.py) (unfortunately, it's not a neural network-based thing like the name might imply), but I'll run you through the general process. Don't worry, I won't go through this stuff again, instead relying on the scripts to do it for us.
 
 The basic idea I started with was:
 ~~~ 
