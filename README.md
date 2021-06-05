@@ -1016,7 +1016,7 @@ It's lost a lot of the fine color detail. For video, it's fine to sacrifice colo
 This stage just decodes the encoded video to raw 24-bit RGB. Nothing special here.
 
 ### "no-dither"?
-This is one of those things that I realized over time. It turns out that dither is detrimental for noise floor when you're using the μ-law compander (spoiler: no, it isn't.).  Generate a 30-second sine wave at 440 Hz:
+This is one of those things that I realized over time. It turns out that dither is detrimental for noise floor when you're using the μ-law compander (spoiler: yesn't.).  Generate a 30-second sine wave at 440 Hz:
 
 ![enter image description here](assets/images/audacity/sine-wave.png)
 
@@ -1092,9 +1092,19 @@ and a zoom-in, for those who want to read the numbers:
 ![enter image description here](assets/images/spectrogram/sine-wave-dither-spectrum-zoomed.png)
 I should've enabled dither all along! Well, at least now you know.
 
+But if you test it on "real" music, using dither produces worse-sounding results. Very odd.
+
 ## Final script
 
 This is more-or-less just a revision of the Round 5 script, with some degree of error-checking implemented. It tells you if FFmpeg or SoX aren't installed, or both, it enables multithreading in SoX (assuming it does anything), and it normalizes the Step numbers to follow this article's notation. It's called [A2V2A.py](scripts/A2V2A.py), because I'm creatively bankrupt when it comes to names.
+
+5th of June: Here's a modified version that uses dither during Step 1 called [A2V2A-dither.py](scripts/A2V2A-dither.py). Try it out! It'll show you that dither worsens the audio quality of processed audio despite being objectively better.
+
+### Changelog
+
+- 2nd of June 2021: Enabled multithreading in SoX (assuming it does anything).
+- 3rd of June 2021: Added separate gain value for μ-law compression step because it tended to clip on certain songs.
+- 5th of June 2021: Further normalized Step numbers in variables to follow article convention.
 
 ## How do you find video codecs?
 
