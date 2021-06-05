@@ -1015,6 +1015,83 @@ It's lost a lot of the fine color detail. For video, it's fine to sacrifice colo
 ### Step 3 (Step 2 in the file)
 This stage just decodes the encoded video to raw 24-bit RGB. Nothing special here.
 
+### "no-dither"?
+This is one of those things that I realized over time. It turns out that dither is detrimental for noise floor when you're using the μ-law compander (spoiler: no, it isn't.).  Generate a 30-second sine wave at 440 Hz:
+
+![enter image description here](assets/images/audacity/sine-wave.png)
+
+And here's a zoom-in:
+
+![enter image description here](assets/images/audacity/sine-wave-zoomed)
+
+Save this as "sine-wave.flac" [(linked here)](assets/audio/sine-wave.flac), and copy over the [AtoVtoA-sox-no-dither.py](scripts/AtoVtoA-sox-no-dither.py) script, as well as a "new" script called [AtoVtoA-sox-dither.py](scripts/AtoVtoA-sox-dither.py).
+
+Run:
+~~~
+ffprobe -hide_banner sine-wave.flac
+~~~
+
+to see the properties of the audio file we've just exported. In my case, it looks like:
+
+~~~
+Input #0, flac, from 'sine-wave.flac':
+  Duration: 00:00:30.00, start: 0.000000, bitrate: 398 kb/s
+  Stream #0:0: Audio: flac, 48000 Hz, mono, s32 (24 bit)
+~~~
+
+This gives us the information we need to run the scripts, specifically the sampling rate and number of channels.
+
+In my case, that means I'll run:
+
+~~~
+python AtoVtoA-sox-no-dither.py 48000 1 sine-wave.flac huffyuv 1k 32x32
+~~~
+and
+~~~
+python AtoVtoA-sox-dither.py 48000 1 sine-wave.flac huffyuv 1k 32x32
+~~~
+
+These are actually short enough that I'm comfortable giving out the FLAC versions of the results. 
+
+[\[sine-wave-dither-huffyuv-1k-32x32.flac\]](assets/audio/sine-wave-dither-huffyuv-1k-32x32.flac)
+
+[\[sine-wave-dither-huffyuv-1k-32x32.flac\]](assets/audio/sine-wave-no-dither-huffyuv-1k-32x32.flac)
+
+You can listen to them; they sound mildly distorted, but the dithered one is more so.
+
+Since we're working with sine waves, we can exploit a very useful property of them: they are pure tones, literally only 1 frequency. As such, we can go ahead and just use a "notch filter" on them to filter out just the pure tone, and listen to the distortion. Find the "Notch Filter..." effect in Audacity, and it'll look like this:
+
+![enter image description here](assets/images/audacity/notch-filter-prompt.png)
+
+Just click OK, and you'll see:
+
+![enter image description here](assets/images/audacity/sine-wave-notch-filtered.png)
+
+There's minor oscillation on the first cycle of the filtered sine waves, but keep in mind that's 0.01 seconds at the start that's like this, compared to the 30 seconds of the full track. It's negligible.
+
+Here are the exported files.
+
+[\[sine-wave-dither-notch.flac\]](assets/audio/sine-wave-dither-notch.flac)
+
+[\[sine-wave-no-dither-notch.flac\]](assets/audio/sine-wave-no-dither-notch.flac)
+
+And if we just play and measure the audio levels... the dithered version ended up at -33 dBFS (sounding a bit odd) and the undithered one flutters around -27 dBFS, sounding like noise.
+
+In other words, dithering is technically better. Crap. I didn't perform this round of testing to prove myself wrong, but here we are. I'll put them into DeltaWave, an audio comparison tool, to compare these two.
+
+Here's the spectrum of the undithered version:
+
+![enter image description here](assets/images/spectrogram/sine-wave-no-dither-spectrum.png)
+
+The undithered version:
+
+![enter image description here](assets/images/spectrogram/sine-wave-dither-spectrum.png)
+
+and a zoom-in, for those who want to read the numbers:
+
+![enter image description here](assets/images/spectrogram/sine-wave-dither-spectrum-zoomed.png)
+I should've enabled dither all along! Well, at least now you know.
+
 ## Final script
 
 This is more-or-less just a revision of the Round 5 script, with some degree of error-checking implemented. It tells you if FFmpeg or SoX aren't installed, or both, it enables multithreading in SoX (assuming it does anything), and it normalizes the Step numbers to follow this article's notation. It's called [A2V2A.py](scripts/A2V2A.py), because I'm creatively bankrupt when it comes to names.
