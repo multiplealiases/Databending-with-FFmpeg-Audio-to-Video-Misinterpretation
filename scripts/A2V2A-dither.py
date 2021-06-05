@@ -141,8 +141,8 @@ step4_out = f"{in_filename}-end-{video_codec}-{bitrate_codec}-{resolution}"
 ## Step 1: Compresses (in the audio engineering sense, not the computing sense), then normalizes an input audio file.
 ## Saves it as 8-bit PCM. Compression here prevents the -48 dB noise floor inherent in 8-bit PCM from interfering with the output later.
 step1_list = ["sox",in_file,"--multi-threaded","--buffer","131072",
-"-r",sample_rate,"-e",encoding,"-SDV","-b",bit_depth,"-c",channels,f"{step1_out}.raw",
-"compand",compress_atk_release,compress_start_end,out_gain_dB,"0",delay,"gain","-n",norm_step1_gain,"-dither"]
+"-r",sample_rate,"-e",encoding,"-SV","-b",bit_depth,"-c",channels,f"{step1_out}.raw",
+"compand",compress_atk_release,compress_start_end,out_gain_dB,"0",delay,"gain","-n",norm_step1_gain,"dither"]
 print(step1_list)
 subprocess.run(step1_list)
 
