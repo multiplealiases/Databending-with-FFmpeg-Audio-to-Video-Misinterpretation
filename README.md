@@ -1092,7 +1092,27 @@ and a zoom-in, for those who want to read the numbers:
 ![enter image description here](assets/images/spectrogram/sine-wave-dither-spectrum-zoomed.png)
 I should've enabled dither all along! Well, at least now you know.
 
-But if you test it on "real" music, using dither produces worse-sounding results. Very odd.
+But if you test it on "real" music, using dither produces worse-sounding results. Very odd. I'll demonstrate using *Things Fall Apart* from before. Here's the dithered versions:
+
+[\[things-fall-apart-dither-huffyuv-1k-32x32.opus, Opus @ 160 kbps\]](assets/audio/things-fall-apart-dither-huffyuv-1k-32x32.opus)
+
+[\[things-fall-apart-dither-huffyuv-1k-32x32.mp3, MP3 @ 320 kbps\]](assets/audio/things-fall-apart-dither-huffyuv-1k-32x32.mp3)
+
+And here are the dithered versions from before:
+
+[\[things-fall-apart-no-dither-huffyuv-1k-32x32.webm, Opus @ 160 kbps\]](assets/audio/things-fall-apart-no-dither-huffyuv-1k-32x32.webm)
+
+[\[things-fall-apart-no-dither-huffyuv-1k-32x32.mp3, MP3 @ 320 kbps\]](assets/audio/things-fall-apart-no-dither-huffyuv-1k-32x32.mp3)
+
+You can hear that the dithered versions have worse buzzing distortion. I'm not sure what to call it, but it's definitely buzzing. I'll go back into DeltaWave. This is the difference spectrum of the undithered version:
+
+![image](assets/images/spectrogram/things-fall-apart-no-dither-delta-spectrogram.png)
+
+And the dithered version:
+
+![image](assets/images/spectrogram/things-fall-apart-dither-delta-spectrogram.png)
+
+The overall "noise floor" is higher in the dithered version, hence it's more distorted. Somehow.
 
 ## Final script
 
