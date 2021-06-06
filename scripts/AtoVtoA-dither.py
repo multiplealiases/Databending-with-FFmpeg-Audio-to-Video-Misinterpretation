@@ -30,7 +30,7 @@ import os
 ## Prints usage information if given no parameters.
 #print(sys.argv)
 if len(sys.argv) == 1:
-    print("Usage: audio-autoencode-compander [sample rate] [no. of channels] [filename w/ extension] [video codec] [bitrate] [internal resolution] \n")
+    print("Usage: AtoVtoA-dither.py [sample rate] [no. of channels] [filename w/ extension] [video codec] [bitrate] [internal resolution] \n")
     sys.exit()
 
 ## Variables
