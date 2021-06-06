@@ -1024,7 +1024,7 @@ And here's a zoom-in:
 
 ![enter image description here](assets/images/audacity/sine-wave-zoomed)
 
-Save this as "sine-wave.flac" [(linked here)](assets/audio/sine-wave.flac), and copy over the [AtoVtoA-sox-no-dither.py](scripts/AtoVtoA-sox-no-dither.py) script, as well as a "new" script called [AtoVtoA-sox-dither.py](scripts/AtoVtoA-sox-dither.py).
+Save this as "sine-wave.flac" [(linked here)](assets/audio/sine-wave.flac), and copy over the [AtoVtoA-sox-no-dither.py](scripts/AtoVtoA-sox-no-dither.py) script, as well as a "new" script called [AtoVtoA-dither.py](scripts/AtoVtoA-dither.py). (No, my naming scheme isn't consistent. It still uses SoX.)
 
 Run:
 ~~~
