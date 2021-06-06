@@ -1207,6 +1207,9 @@ The process of discovery here took me 35 days, and it took me another 25 to comp
 
 If there's anything you'd like to add or change, fork (and add a pull request) this repository or find my contact info on GitHub at [multiplealiases](https://github.com/multiplealiases). I'm especially worried about dead links; please tell me if there are any.
 
+Things I'd like to know (I'll give credit):
+- Why does the μ-law compander produce a buzzing distortion on music?
+
 ***
 
 This work (and all files within the folder `/assets` and all of its subdirectories recursively) is licensed under a
