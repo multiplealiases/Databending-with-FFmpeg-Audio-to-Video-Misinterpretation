@@ -1,12 +1,25 @@
 #### BEGINNING OF LICENSE TEXT ####
 
-## Copyright 2021 multiplealiases
+## Copyright (c) 2021 multiplealiases
 
-## Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-## The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+## Permission is hereby granted, free of charge, to any person obtaining a copy
+## of this software and associated documentation files (the "Software"), to deal
+## in the Software without restriction, including without limitation the rights
+## to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+## copies of the Software, and to permit persons to whom the Software is
+## furnished to do so, subject to the following conditions:
 
-## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+## The above copyright notice and this permission notice shall be included in all
+## copies or substantial portions of the Software.
+
+## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+## EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+## MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+## IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+## DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+## OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+## OR OTHER DEALINGS IN THE SOFTWARE.
 
 #### END OF LICENSE TEXT ####
 
@@ -22,36 +35,40 @@ import shutil
 
 print(sys.argv)
 
-## Prints a suitable error and exits if at least one dependency of this script is nonexistent. This does not check for correctness.
+## Prints a suitable error and exits if at least one dependency of this script is nonexistent.
+## This does not check for correctness.
 
-if shutil.which("ffmpeg") == None and shutil.which("sox") == None:
-    print ("Both FFmpeg and SoX are not installed on this system. Please install both to run this script.")
+if shutil.which("ffmpeg") is None and shutil.which("sox") is None:
+    print ("Both FFmpeg and SoX are not installed on this system. \
+            Please install both to run this script.")
     sys.exit()
     
-elif shutil.which("ffmpeg") == None:
+elif shutil.which("ffmpeg") is None:
     print("FFmpeg is not installed on this system. Please install it to run this script.")
     sys.exit()
 
-elif shutil.which("sox") == None:
+elif shutil.which("sox") is None:
     print("SoX is not installed on this system. Please install it to run this script.")
     sys.exit()
 
 ## Prints usage information if given no parameters.
 if len(sys.argv) == 1:
-    print(f"Usage: {os.path.basename(__file__)} [sample rate] [no. of channels] [filename w/ extension] [video codec] [bitrate] [internal resolution] \n")
+    print(f"Usage: {os.path.basename(__file__)} [sample rate] [no. of channels] \
+[filename w/ extension] [video codec] [bitrate] [internal resolution] \n")
     sys.exit()
 
 
 ## Variables
 
 #### Step 1
-## Setting bit_depth to anything other than 8 will likely lead to severely-distorted audio. You have been warned!
+## Setting bit_depth to anything other than 8 will likely lead to severely-distorted audio.
+## You have been warned!
 bit_depth = "8"
 sample_rate = sys.argv[1]
 ## Theoretically-changeable, but SoX will not allow signed 8-bit PCM as output.
 encoding = "unsigned-integer"
 
-## Compander parameters. 
+## Compander parameters.
 
 ## Compander definition. Defined from left-to-right.
 dB_list = [(-80.0,-46.86), (-79.02,-45.89), (-77.99,-44.88), (-77.02,-43.92), (-76.03,-42.95), (-75.04,-41.98),
@@ -75,7 +92,7 @@ dB_list = [(-80.0,-46.86), (-79.02,-45.89), (-77.99,-44.88), (-77.02,-43.92), (-
 x_dB = [x for x,y in dB_list]
 y_dB = [y for x,y in dB_list]
 
-## Declares strings. 
+## Declares strings.
 compress_dB = ""
 expand_dB = ""
 
@@ -89,13 +106,14 @@ for i in range(0,len(x_dB)):
         expand_dB += f"{y_dB[i]},{x_dB[i]},"
 
 ## Attack, release and delay defined here for ease of change.
-## I don't believe it's beneficial for a mu-law compander, but you are free to change this as you please.
+## I don't believe it's beneficial for a mu-law compander,
+## but you are free to change this as you please.
 attack = "0"
 release = "0"
 delay = "0"
 knee_dB = "0.2"
 
-## Companders tend to clip the output; this lowers the gain to prevent that. 
+## Companders tend to clip the output; this lowers the gain to prevent that.
 ## Please note that audio is normalized after companding, so it's of little consequence.
 out_gain_dB = "-12"
 ## Output still tends to clip, so a separate normalizing gain is needed.
@@ -138,32 +156,39 @@ step2_out = f"{in_filename}-step2-{video_codec}-{bitrate_codec}-{resolution}"
 step3_out = f"{in_filename}-step3-{video_codec}-{bitrate_codec}-{resolution}"
 step4_out = f"{in_filename}-end-{video_codec}-{bitrate_codec}-{resolution}"
 
-## Step 1: Compresses (in the audio engineering sense, not the computing sense), then normalizes an input audio file.
-## Saves it as 8-bit PCM. Compression here prevents the -48 dB noise floor inherent in 8-bit PCM from interfering with the output later.
+## Step 1: Compresses (in the audio engineering sense, not the computing sense),
+## then normalizes an input audio file. Saves it as 8-bit PCM.
+## Compression here prevents the -48 dB noise floor inherent in 8-bit PCM
+## from interfering with the output later.
 step1_list = ["sox",in_file,"--multi-threaded","--buffer","131072",
 "-r",sample_rate,"-e",encoding,"-SDV","-b",bit_depth,"-c",channels,f"{step1_out}.raw",
 "compand",compress_atk_release,compress_start_end,out_gain_dB,"0",delay,"gain","-n",norm_step1_gain]
 print(step1_list)
-subprocess.run(step1_list)
+subprocess.run(step1_list, check=True)
 
-## Step 2: Takes in the 8-bit PCM as RGB 24-bit video (by default), and encodes it into a format of your choice as defined in the input parameters.
+## Step 2: Takes in the 8-bit PCM as RGB 24-bit video (by default),
+## and encodes it into a format of your choice as defined in the input parameters.
 step2_list = ["ffmpeg","-y",
-              "-f","rawvideo","-s",resolution,"-r",framerate,"-pix_fmt",pixel_format,"-i",f"{step1_out}.raw",
+              "-f","rawvideo","-s",resolution,"-r",framerate,"-pix_fmt",pixel_format,
+              "-i",f"{step1_out}.raw",
               "-c:v",video_codec,"-b:v",bitrate_codec,f"{step2_out}{step2_out_extension}"]
 print(step2_list)
-subprocess.run(step2_list)
+subprocess.run(step2_list, check=True)
 
 
 ## Step 3: Decode the encoded "video" back into raw video.
+## This is to allow SoX to re-interpret the video as audio in the next step.
 step3_list = ["ffmpeg","-y",
               "-i",f"{step2_out}{step2_out_extension}",
               "-f","rawvideo","-r",framerate,"-pix_fmt",pixel_format,f"{step3_out}.raw"]
 print(step3_list)
-subprocess.run(step3_list)
+subprocess.run(step3_list, check=True)
 
 ## Step 4: Use SoX to interpret our raw video back into 8-bit PCM.
 ## Expands the audio, re-gains it, and spits out the same format as the input.
 step4_list = ["sox","--multi-threaded","--buffer","131072",
-"-r",sample_rate,"-e",encoding,"-SV","-b",bit_depth,"-c",channels,f"{step3_out}.raw","-b",out_bit_depth,"-c",channels,f"{step4_out}{out_audio_codec}","compand",expand_atk_release,expand_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
+"-r",sample_rate,"-e",encoding,"-SV","-b",bit_depth,"-c",channels,f"{step3_out}.raw"
+,"-b",out_bit_depth,"-c",channels,f"{step4_out}{out_audio_codec}",
+"compand",expand_atk_release,expand_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
 print(step4_list)
-subprocess.run(step4_list)
+subprocess.run(step4_list, check=True)
