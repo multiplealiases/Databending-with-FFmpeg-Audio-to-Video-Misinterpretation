@@ -1208,7 +1208,10 @@ The process of discovery here took me 35 days, and it took me another 25 to comp
 If there's anything you'd like to add or change, fork (and add a pull request) this repository or find my contact info on GitHub at [multiplealiases](https://github.com/multiplealiases). I'm especially worried about dead links; please tell me if there are any.
 
 Things I'd like to know (I'll give credit):
-- Why does the μ-law compander produce a buzzing distortion on music?
+- Why does the μ-law compander produce a buzzing distortion on music? 
+- Not only that, but further experimentation shows that it sometimes causes the upper frequencies to just disappear. Why?
+
+Here's a script that only does the μ-law companding for those wishing to experiment on it: [dsp-ulaw.py](scripts/dsp-ulaw.py).
 
 ***
 
