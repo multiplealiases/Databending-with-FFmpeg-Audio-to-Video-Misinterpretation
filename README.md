@@ -1199,7 +1199,76 @@ On FFmpeg 4.24 on Ubuntu 20.04 (WSL), that command produces this output:
  DEVIL. xface                X-face image
 ~~~
 
-Your FFmpeg may differ, and some codecs don't support the MKV container format, but that's still a substantial number of codecs to play with. You may also need to adjust the internal resolution parameter for some of these codecs. Happy databending!
+Your FFmpeg may differ, and some codecs don't support the MKV container format, but that's still a substantial number of codecs to play with. You may also need to adjust the internal resolution parameter for some of these codecs.
+
+## Actually databending with this script
+
+I kinda forgot about this part the first time I wrote this. I've solved the one problem I needed to solve, so I think I'm good to go on this one.
+
+Anyway, let's get ourselves a new song. Let's take [La Bombonera](https://freemusicarchive.org/music/eaters/an-evening-with-tuck-pendleton/la-bombonera) by Eaters. Rename it to "la-bombonera.mp3". Now run:
+
+~~~
+ffprobe -hide_banner la-bombonera.mp3
+~~~
+
+Which will yield
+
+~~~
+Input #0, mp3, from 'la-bombonera.mp3':
+  Metadata:
+    title           : Track 10
+    track           : 10
+    album           : An Evening With Tuck Pendleton
+    artist          : Eaters
+    TLEN            : 212320
+    id3v2_priv.PeakValue: \xa1\x7f\x00\x00
+    id3v2_priv.AverageLevel: {\x1b\x00\x00
+    id3v2_priv.WM/MediaClassSecondaryID: \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00
+    id3v2_priv.WM/MediaClassPrimaryID: \xbc}`\xd1#\xe3\xe2K\x86\xa1H\xa4*(D\x1e
+    id3v2_priv.WM/UniqueFileIdentifier: ;\x00\x00\x00
+  Duration: 00:03:32.04, start: 0.000000, bitrate: 256 kb/s
+  Stream #0:0: Audio: mp3, 44100 Hz, stereo, fltp, 256 kb/s
+~~~
+
+The things we specifically need (at least for now until auto-detection is patched in) are the sampling rate and the number of channels. In this case, the sampling rate is 44100 Hz and there are 2 channels (stereo).
+
+With that info in hand, run:
+
+~~~
+ffmpeg -i la-bombonera.mp3 -c:a flac la-bombonera.flac
+~~~
+
+to get it to work with the script, then:
+
+~~~
+python A2V2A.py 44100 2 la-bombonera.flac libx264 1024k 176x144
+~~~
+
+This will produce an output file called "la-bombonera-end-libx264-1024k-176x144.flac". I'll provide lossy versions below:
+
+[\[la-bombonera-end-libx264-1024k-176x144.webm, Opus @ 160 kbps\]](assets/audio/la-bombonera-end-libx264-1024k-176x144.webm)
+
+[\[la-bombonera-end-libx264-1024k-176x144.mp3, MP3 @ 320 kbps\]](assets/audio/la-bombonera-end-libx264-1024k-176x144.mp3)
+
+You can hear these; they're terrible-quality. Very crunchy. 
+
+### The odd quirk of Theora
+
+This may not be available on your FFmpeg (looking at you, Termux), but try running:
+
+~~~
+python A2V2A.py 44100 2 la-bombonera.flac libtheora 192k 176x144
+~~~
+
+Which should produce a final output called "la-bombonera-end-libtheora-192k-176x144.flac". Lossy versions below, but I warn you that these have some ear-blasting noises at the start. Lower your volume!
+
+[\[la-bombonera-end-libtheora-192k-176x144.webm, Opus @ 160 kbps\]](assets/audio/la-bombonera-end-libtheora-192k-176x144.webm)
+
+[\[la-bombonera-end-libtheora-192k-176x144.mp3, MP3 @ 320 kbps\]](assets/audio/la-bombonera-end-libtheora-192k-176x144.mp3)
+
+Here, it's constantly looping on itself halfway in. It's like a broken record, but multilayered. It's a fascinating effect. This is because the Theora codec tends to skip frames when it doesn't have enough bandwidth to work with. Hence, you get repeated sections over and over.
+
+
 
 ## Conclusion
 
