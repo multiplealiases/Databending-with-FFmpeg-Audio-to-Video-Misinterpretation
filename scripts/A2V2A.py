@@ -116,8 +116,9 @@ knee_dB = "0.2"
 ## Companders tend to clip the output; this lowers the gain to prevent that.
 ## Please note that audio is normalized after companding, so it's of little consequence.
 out_gain_dB = "-12"
-## Output still tends to clip, so a separate normalizing gain is needed.
-norm_step1_gain = "-1.1"
+## ## Output still tends to clip, so a separate normalizing gain is needed.
+## Fixed. Applied "-G" to guard against clipping.
+norm_step1_gain = "-0"
 
 #### Step 2
 in_filename = os.path.splitext(sys.argv[3])[0]
@@ -160,7 +161,7 @@ step4_out = f"{in_filename}-end-{video_codec}-{bitrate_codec}-{resolution}"
 ## then normalizes an input audio file. Saves it as 8-bit PCM.
 ## Compression here prevents the -48 dB noise floor inherent in 8-bit PCM
 ## from interfering with the output later.
-step1_list = ["sox",in_file,"--multi-threaded","--buffer","131072",
+step1_list = ["sox","-G",in_file,"--multi-threaded","--buffer","131072",
 "-r",sample_rate,"-e",encoding,"-SDV","-b",bit_depth,"-c",channels,f"{step1_out}.raw",
 "compand",compress_atk_release,compress_start_end,out_gain_dB,"0",delay,"gain","-n",norm_step1_gain]
 print(step1_list)
@@ -186,7 +187,7 @@ subprocess.run(step3_list, check=True)
 
 ## Step 4: Use SoX to interpret our raw video back into 8-bit PCM.
 ## Expands the audio, re-gains it, and spits out the same format as the input.
-step4_list = ["sox","--multi-threaded","--buffer","131072",
+step4_list = ["sox","-G","--multi-threaded","--buffer","131072",
 "-r",sample_rate,"-e",encoding,"-SV","-b",bit_depth,"-c",channels,f"{step3_out}.raw"
 ,"-b",out_bit_depth,"-c",channels,f"{step4_out}{out_audio_codec}",
 "compand",expand_atk_release,expand_start_end,out_gain_dB,"0",delay,"gain","-n",gain_dB]
